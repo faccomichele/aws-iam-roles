@@ -1,3 +1,3 @@
-roles = [
-  'gh-config-sync'
+gha-roles = [
+  "gh-config-sync"
 ]
