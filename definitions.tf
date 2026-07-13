@@ -15,7 +15,7 @@ locals {
       policy_arn = pair[1]
     }
   }
-  
+
   gha_common_assume_policy = {
     for role_name in var.gha-roles : role_name => jsonencode({
       Version = "2012-10-17"
@@ -29,6 +29,8 @@ locals {
           Condition = {
             StringEquals = {
               "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
+            }
+            StringLike = {
               "token.actions.githubusercontent.com:sub" = "repo:${local.organization}/${role_name}:*"
             }
           }
