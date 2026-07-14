@@ -1,3 +1,4 @@
 gha-roles = [
-  "gh-config-sync"
+  "gh-config-sync",
+  "aws-auto-fix-roles"
 ]
