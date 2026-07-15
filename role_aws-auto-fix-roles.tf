@@ -133,7 +133,6 @@ resource "aws_iam_role_policy" "aws-auto-fix-roles" {
           "cloudtrail:DeleteTrail",
           "cloudtrail:GetTrail",
           "cloudtrail:GetTrailStatus",
-          "cloudtrail:DescribeTrails",
           "cloudtrail:StartLogging",
           "cloudtrail:StopLogging",
           "cloudtrail:AddTags",
@@ -145,6 +144,14 @@ resource "aws_iam_role_policy" "aws-auto-fix-roles" {
         Resource = [
           "arn:aws:cloudtrail:*:${data.aws_caller_identity.current.account_id}:trail/aws-auto-fix-roles-*",
         ]
+      },
+      {
+        Sid    = "CloudTrailDescribeTrails"
+        Effect = "Allow"
+        Action = [
+          "cloudtrail:DescribeTrails",
+        ]
+        Resource = ["*"]
       },
       {
         Sid    = "S3CloudTrailBucketManagement"
