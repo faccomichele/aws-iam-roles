@@ -12,16 +12,11 @@ data "aws_iam_policy" "terraform-core-s3-artifacts-access" {
   arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/aws-terraform-core-s3-artifacts-access-${local.environment}"
 }
 
-data "external" "github_repository_owner_id" {
-  program = ["sh", "-c", "read query; var_name=$(echo $query | jq -r '.name'); eval val=\\$$var_name; jq -n --arg val \"$val\" '{\"value\": $val}'"]
-  query   = {
-    name  = "GITHUB_REPOSITORY_OWNER_ID"
-  }
-}
-
-data "external" "github_repository_id" {
-  program = ["sh", "-c", "read query; var_name=$(echo $query | jq -r '.name'); eval val=\\$$var_name; jq -n --arg val \"$val\" '{\"value\": $val}'"]
-  query   = {
-    name  = "GITHUB_REPOSITORY_ID"
-  }
+data "external" "all_env_vars" {
+  # This runs 'env', passes it to jq, and splits the 'KEY=VALUE' lines into a valid JSON object
+  program = [
+    "sh", 
+    "-c", 
+    "env | jq -Rs 'split(\"\n\") | map(select(length > 0 and contains(\"=\"))) | map(split(\"=\")) | map({(.[0]): .[1:] | join(\"=\")}) | add'"
+  ]
 }
