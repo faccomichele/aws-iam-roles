@@ -2,6 +2,8 @@ locals {
   environment  = terraform.workspace
   organization = var.tags["Organization"] != null ? var.tags["Organization"] : "unknown"
   tags         = var.tags
+  # github_repository_id = var.github_repository_id
+  # github_actor_id      = var.github_actor_id
 
   common_role_policy_arns = toset([
     data.aws_iam_policy.terraform-core-ssm-read.arn,
