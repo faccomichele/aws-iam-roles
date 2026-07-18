@@ -52,6 +52,7 @@ resource "aws_iam_role_policy" "aws-auto-fix-roles" {
         ]
         Resource = [
           "arn:aws:lambda:*:${data.aws_caller_identity.current.account_id}:function:aws-auto-fix-roles-*",
+          "arn:aws:lambda:*:${data.aws_caller_identity.current.account_id}:layer:aws-auto-fix-roles-github-issue-dependencies-*"
         ]
       },
       {
