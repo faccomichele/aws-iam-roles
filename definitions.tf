@@ -4,7 +4,6 @@ locals {
   tags         = var.tags
   
   github_repository_owner_id  = sensitive(data.external.gh_vars.result["GITHUB_REPOSITORY_OWNER_ID"])
-  github_repository_id        = sensitive(data.external.gh_vars.result["GITHUB_REPOSITORY_ID"])
   
   common_role_policy_arns = toset([
     data.aws_iam_policy.terraform-core-ssm-read.arn,
@@ -34,7 +33,7 @@ locals {
               "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
             }
             StringLike = {
-              "token.actions.githubusercontent.com:sub" = "repo:${local.organization}@${local.github_repository_owner_id}/${role_name}@${local.github_repository_id}:*"
+              "token.actions.githubusercontent.com:sub" = "repo:${local.organization}@${local.github_repository_owner_id}/${role_name}@*:*"
             }
           }
         }
