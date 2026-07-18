@@ -11,14 +11,20 @@ Metadata:
           default: Repository Configuration
         Parameters:
           - Organization
-          - ProjectName
+          - OwnerId
+          - RepositoryName
+          - RepositoryId
           - Environment
           - AccountAlias
     ParameterLabels:
       Organization:
         default: GitHub Organization
-      ProjectName:
+      OwnerId:
+        default: GitHub Owner ID
+      RepositoryName:
         default: Repository Name
+      RepositoryId:
+        default: Repository ID
       Environment:
         default: Environment
       AccountAlias:
@@ -33,7 +39,16 @@ Parameters:
     AllowedPattern: ^[a-z0-9-]+$
     ConstraintDescription: Must be lowercase alphanumeric with hyphens only
   
-  ProjectName:
+  OwnerId:
+    Type: String
+    Description: GitHub owner ID (numeric)
+    Default: 12345678
+    MinLength: 1
+    MaxLength: 10
+    AllowedPattern: ^[0-9-]+$
+    ConstraintDescription: Must be a valid GitHub owner ID (numeric)
+
+  RepositoryName:
     Type: String
     Description: Name of the GitHub repository (change this when copying to another repo)
     Default: aws-iam-roles
@@ -42,6 +57,15 @@ Parameters:
     AllowedPattern: ^[a-zA-Z0-9._-]+$
     ConstraintDescription: Must be a valid GitHub repository name
   
+  RepositoryId:
+    Type: String
+    Description: GitHub repository ID (numeric)
+    Default: 12345678
+    MinLength: 1
+    MaxLength: 10
+    AllowedPattern: ^[0-9-]+$
+    ConstraintDescription: Must be a valid GitHub repository ID (numeric)
+
   Environment:
     Type: String
     Description: Environment/Workspace (dev, stg, prod)
@@ -84,7 +108,7 @@ Resources:
             Action: sts:AssumeRoleWithWebIdentity
             Condition:
               StringLike:
-                token.actions.githubusercontent.com:sub: !Sub 'repo:${Organization}/${ProjectName}:*'
+                token.actions.githubusercontent.com:sub: !Sub 'repo:${Organization}@${OwnerId}/${RepositoryName}@${RepositoryId}:*'
               StringEquals:
                 token.actions.githubusercontent.com:aud: sts.amazonaws.com
       ManagedPolicyArns:
@@ -136,13 +160,13 @@ Resources:
                 Resource: !Sub 'arn:aws:iam::${AWS::AccountId}:policy/*'
       Tags:
         - Key: Project
-          Value: !Ref ProjectName
+          Value: !Ref RepositoryName
         - Key: Organization
           Value: !Ref Organization
         - Key: Environment
           Value: !Ref Environment
         - Key: RepositoryURL
-          Value: !Sub 'https://github.com/${Organization}/${ProjectName}'
+          Value: !Sub 'https://github.com/${Organization}/${RepositoryName}'
         - Key: Automation
           Value: CloudFormation
         - Key: RepositoryPath
@@ -150,7 +174,7 @@ Resources:
         - Key: RepositoryFile
           Value: github-iam-role.yaml
         - Key: Description
-          Value: !Sub 'IAM role for GitHub Actions in ${Organization}/${ProjectName}'
+          Value: !Sub 'IAM role for GitHub Actions in ${Organization}/${RepositoryName}'
         - Key: Region
           Value: !Ref 'AWS::Region'
 

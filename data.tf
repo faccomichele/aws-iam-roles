@@ -11,3 +11,7 @@ data "aws_iam_policy" "terraform-core-tf-access" {
 data "aws_iam_policy" "terraform-core-s3-artifacts-access" {
   arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/aws-terraform-core-s3-artifacts-access-${local.environment}"
 }
+
+data "external" "gh_vars" {
+  program = ["cat", "gh_vars.json"]
+}
