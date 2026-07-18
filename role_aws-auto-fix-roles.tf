@@ -43,6 +43,12 @@ resource "aws_iam_role_policy" "aws-auto-fix-roles" {
           "lambda:GetFunctionCodeSigningConfig",
           "lambda:GetPolicy",
           "lambda:ListVersionsByFunction",
+          "lambda:ListAliases",
+          "lambda:GetLayerVersion",
+          "lambda:GetLayerVersionPolicy",
+          "lambda:PublishLayerVersion",
+          "lambda:DeleteLayerVersion",
+          "lambda:ListLayerVersions",
         ]
         Resource = [
           "arn:aws:lambda:*:${data.aws_caller_identity.current.account_id}:function:aws-auto-fix-roles-*",
@@ -172,6 +178,7 @@ resource "aws_iam_role_policy" "aws-auto-fix-roles" {
           "s3:GetAccelerateConfiguration",
           "s3:GetReplicationConfiguration",
           "s3:ListBucket",
+          "s3:ListTagsForResource"
         ]
         Resource = [
           "arn:aws:s3:::aws-auto-fix-roles-cloudtrail-*",
