@@ -15,3 +15,8 @@ data "aws_iam_policy" "terraform-core-s3-artifacts-access" {
 data "external" "gh_vars" {
   program = ["cat", "gh_vars.json"]
 }
+
+data "aws_kms_alias" "dynamodb_us-east-1" {
+  provider  = aws.us-east-1
+  name      = "alias/aws/dynamodb"
+}

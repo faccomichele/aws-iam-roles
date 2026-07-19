@@ -27,7 +27,7 @@ resource "aws_iam_role_policy" "aws-simple-saml-idp" {
           "iam:PassRole"
         ]
         Resource = [
-          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/simple-saml-idp-${local.environment}",
+          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/simple-saml-idp-lambda-${local.environment}",
         ]
       },
       {
@@ -97,6 +97,16 @@ resource "aws_iam_role_policy" "aws-simple-saml-idp" {
         ]
       },
       {
+        Sid    = "KMSRoleManagement"
+        Effect = "Allow"
+        Action = [
+          "kms:DescribeKey"
+        ],
+        Resource = [
+          data.aws_kms_alias.dynamodb_us-east-1.target_key_arn,
+        ]
+      },
+      {
         Sid    = "SSMParameterManagement"
         Effect = "Allow"
         Action = [
@@ -110,7 +120,8 @@ resource "aws_iam_role_policy" "aws-simple-saml-idp" {
           "ssm:ListTagsForResource",
         ],
         Resource = [
-          "arn:aws:ssm:*:${data.aws_caller_identity.current.account_id}:parameter/simple-saml-idp-*-${local.environment}",
+          "arn:aws:ssm:*:${data.aws_caller_identity.current.account_id}:parameter/simple-saml-idp/${local.environment}/*",
+
         ]
       },
       {
