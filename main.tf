@@ -16,4 +16,9 @@ provider "aws" {
   region = "us-east-1" # Main region for IAM roles
 }
 
+provider "aws" {
+  alias  = "us-east-1"
+  region = "us-east-1" # Region specific provider for regional resources access
+}
+
 provider "github" {} # Takes the default GitHub token from the environment variable GITHUB_TOKEN provided by the GitHub Actions runner.
