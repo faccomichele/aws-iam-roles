@@ -163,7 +163,8 @@ resource "aws_iam_role_policy" "aws-simple-saml-idp" {
           "s3:PutObjectTagging",
           "s3:GetObjectTagging",
           "s3:GetObjectAcl",
-          "s3:PutLifecycleConfiguration"
+          "s3:PutLifecycleConfiguration",
+          "s3:ListTagsForResource"
         ],
         Resource = [
           "arn:aws:s3:::simple-saml-idp-login-${local.environment}-*",
