@@ -123,6 +123,73 @@ resource "aws_iam_role_policy" "aws-auto-fix-roles" {
         ]
       },
       {
+        Sid    = "DynamoDBManagement"
+        Effect = "Allow"
+        Action = [
+          "dynamodb:CreateTable",
+          "dynamodb:DeleteTable",
+          "dynamodb:DescribeTable",
+          "dynamodb:DescribeContinuousBackups",
+          "dynamodb:DescribeTimeToLive",
+          "dynamodb:UpdateTable",
+          "dynamodb:UpdateContinuousBackups",
+          "dynamodb:UpdateTimeToLive",
+          "dynamodb:TagResource",
+          "dynamodb:UntagResource",
+          "dynamodb:ListTagsOfResource",
+        ]
+        Resource = [
+          "arn:aws:dynamodb:*:${data.aws_caller_identity.current.account_id}:table/aws-auto-fix-roles-*",
+        ]
+      },
+      {
+        Sid    = "DynamoDBListTables"
+        Effect = "Allow"
+        Action = [
+          "dynamodb:ListTables",
+        ]
+        Resource = ["*"]
+      },
+      {
+        Sid    = "CloudWatchAlarmManagement"
+        Effect = "Allow"
+        Action = [
+          "cloudwatch:PutMetricAlarm",
+          "cloudwatch:PutCompositeAlarm",
+          "cloudwatch:DeleteAlarms",
+          "cloudwatch:DescribeAlarms",
+          "cloudwatch:DescribeAlarmsForMetric",
+          "cloudwatch:DescribeAlarmHistory",
+          "cloudwatch:EnableAlarmActions",
+          "cloudwatch:DisableAlarmActions",
+          "cloudwatch:TagResource",
+          "cloudwatch:UntagResource",
+          "cloudwatch:ListTagsForResource",
+          "cloudwatch:ListMetrics",
+        ]
+        Resource = ["*"]
+      },
+      {
+        Sid    = "SNSTopicManagement"
+        Effect = "Allow"
+        Action = [
+          "sns:CreateTopic",
+          "sns:DeleteTopic",
+          "sns:GetTopicAttributes",
+          "sns:SetTopicAttributes",
+          "sns:Subscribe",
+          "sns:Unsubscribe",
+          "sns:ListTopics",
+          "sns:ListSubscriptionsByTopic",
+          "sns:TagResource",
+          "sns:UntagResource",
+          "sns:ListTagsForResource",
+        ]
+        Resource = [
+          "arn:aws:sns:*:${data.aws_caller_identity.current.account_id}:aws-auto-fix-roles-*",
+        ]
+      },
+      {
         Sid    = "CloudTrailManagement"
         Effect = "Allow"
         Action = [

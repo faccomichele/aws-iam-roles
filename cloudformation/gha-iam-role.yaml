@@ -158,6 +158,11 @@ Resources:
                   - iam:TagPolicy
                   - iam:UntagPolicy
                 Resource: !Sub 'arn:aws:iam::${AWS::AccountId}:policy/*'
+              - Effect: Allow
+                Action:
+                  - kms:ListAliases
+                  - kms:DescribeKey
+                Resource: '*'
       Tags:
         - Key: Project
           Value: !Ref RepositoryName
