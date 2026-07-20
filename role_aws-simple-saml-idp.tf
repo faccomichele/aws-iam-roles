@@ -216,7 +216,10 @@ resource "aws_iam_role_policy" "aws-simple-saml-idp" {
           "logs:TagLogGroup",
           "logs:UntagLogGroup",
           "logs:PutRetentionPolicy",
-          "logs:DeleteRetentionPolicy"
+          "logs:DeleteRetentionPolicy",
+          "logs:TagResource",
+          "logs:UntagResource",
+          "logs:ListTagsForResource"
         ],
         Resource = [
           "arn:aws:logs:*:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/simple-saml-idp-*-${local.environment}",
@@ -249,6 +252,7 @@ resource "aws_iam_role_policy" "aws-simple-saml-idp" {
         Action = [
           "iam:CreateSAMLProvider",
           "iam:TagSAMLProvider",
+          "iam:UntagSAMLProvider",
           "iam:GetSAMLProvider",
           "iam:ListSAMLProviders",
           "iam:DeleteSAMLProvider"
