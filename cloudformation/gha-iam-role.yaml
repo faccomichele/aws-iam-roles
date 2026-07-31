@@ -134,6 +134,7 @@ Resources:
                   - iam:ListRoles
                   - iam:ListRolePolicies
                   - iam:ListRoleTags
+                  - iam:ListInstanceProfilesForRole
                 Resource: '*'
               - Effect: Allow
                 Action:
