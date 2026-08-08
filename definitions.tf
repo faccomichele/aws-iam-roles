@@ -3,7 +3,7 @@ locals {
   organization = var.tags["Organization"] != null ? var.tags["Organization"] : "unknown"
   tags         = var.tags
   
-  github_repository_owner_id  = sensitive(data.external.gh_vars.result["GITHUB_REPOSITORY_OWNER_ID"])
+  github_repository_owner_id  = var.local-only ? "0000" : (data.external.gh_vars[0].result["GITHUB_REPOSITORY_OWNER_ID"])
   
   common_role_policy_arns = toset([
     data.aws_iam_policy.terraform-core-ssm-read.arn,

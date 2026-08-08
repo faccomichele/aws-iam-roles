@@ -32,6 +32,7 @@ jobs:
       working-directory: '.'
       environment-prefix: ${{ matrix.environment_prefix }}
       action: 'apply'
+      skip-terraform-report: ${{ vars.STS_ENDPOINT && 'true' || 'false' }}
     secrets: inherit
 
   stg-wait-gate:

@@ -31,6 +31,7 @@ jobs:
       working-directory: '.'
       environment-prefix: ${{ matrix.environment_prefix }}
       action: 'plan'
+      skip-terraform-report: ${{ vars.STS_ENDPOINT && 'true' || 'false' }}
     secrets: inherit
 
   stg:

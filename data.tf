@@ -13,10 +13,12 @@ data "aws_iam_policy" "terraform-core-s3-artifacts-access" {
 }
 
 data "external" "gh_vars" {
+  count     = var.local-only == false ? 1 : 0
   program = ["cat", "gh_vars.json"]
 }
 
 data "aws_kms_alias" "dynamodb_us-east-1" {
+  count     = var.local-only == false ? 1 : 0
   provider  = aws.us-east-1
   name      = "alias/aws/dynamodb"
 }
