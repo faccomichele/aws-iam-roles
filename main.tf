@@ -10,6 +10,10 @@ terraform {
 
 provider "aws" {
   region = "us-east-1" # Main region for IAM roles
+
+  default_tags {
+    tags = var.tags
+  }
 }
 
 provider "aws" {

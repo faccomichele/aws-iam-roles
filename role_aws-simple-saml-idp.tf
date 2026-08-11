@@ -183,6 +183,7 @@ resource "aws_iam_role_policy" "aws-simple-saml-idp" {
           "cloudfront:UpdateDistribution",
           "cloudfront:DeleteDistribution",
           "cloudfront:TagResource",
+          "cloudfront:UntagResource",
           "cloudfront:ListTagsForResource",
           "cloudfront:CreateCloudFrontOriginAccessIdentity",
           "cloudfront:GetCloudFrontOriginAccessIdentity",

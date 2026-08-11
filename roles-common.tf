@@ -3,7 +3,9 @@ resource "aws_iam_role" "gha-role" {
 
   name_prefix        = "${each.key}-${local.environment}-GHARole-"
   assume_role_policy = local.gha_common_assume_policy[each.key]
-  tags               = local.tags
+  tags               = {
+    RepositoryFile = "role-common.tf"
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "terraform-common" {
