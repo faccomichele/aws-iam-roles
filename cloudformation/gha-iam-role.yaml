@@ -111,6 +111,13 @@ Resources:
                 token.actions.githubusercontent.com:sub: !Sub 'repo:${Organization}@${OwnerId}/${RepositoryName}@${RepositoryId}:*'
               StringEquals:
                 token.actions.githubusercontent.com:aud: sts.amazonaws.com
+          - Effect: Allow
+            Principal:
+              AWS: !Sub 'arn:aws:iam::${AWS::AccountId}:root'
+            Action: sts:AssumeRole
+            Condition:
+              StringEquals:
+                aws:userid: !Ref 'AWS::AccountId'
       ManagedPolicyArns:
         - !Sub 'arn:aws:iam::${AWS::AccountId}:policy/aws-terraform-core-tf-access-${Environment}'
         - !Sub 'arn:aws:iam::${AWS::AccountId}:policy/aws-terraform-core-ssm-read-${Environment}'

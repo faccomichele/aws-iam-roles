@@ -103,7 +103,7 @@ resource "aws_iam_role_policy" "aws-simple-saml-idp" {
           "kms:DescribeKey"
         ],
         Resource = [
-          data.aws_kms_alias.dynamodb_us-east-1.target_key_arn,
+          data.aws_kms_alias.dynamodb_us-east-1[0].target_key_arn,
         ]
       },
       {
@@ -183,6 +183,7 @@ resource "aws_iam_role_policy" "aws-simple-saml-idp" {
           "cloudfront:UpdateDistribution",
           "cloudfront:DeleteDistribution",
           "cloudfront:TagResource",
+          "cloudfront:UntagResource",
           "cloudfront:ListTagsForResource",
           "cloudfront:CreateCloudFrontOriginAccessIdentity",
           "cloudfront:GetCloudFrontOriginAccessIdentity",

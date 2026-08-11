@@ -8,3 +8,9 @@ variable "gha-roles" {
   type        = list(string)
   default     = []
 }
+
+variable "local-only" {
+  description = "If true, the deployment will be done only locally, without connecting to GitHub"
+  type        = bool
+  default     = false
+}
