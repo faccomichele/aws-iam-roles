@@ -28,7 +28,7 @@ jobs:
       working-directory: '.'
       environment-prefix: ${{ matrix.environment_prefix }}
       action: 'destroy'
-      skip-terraform-report: ${{ vars.STS_ENDPOINT && 'true' || 'false' }}
+      skip-terraform-report: ${{ vars.STS_ENDPOINT && 'true' }}
     secrets: inherit
 
   stg:
