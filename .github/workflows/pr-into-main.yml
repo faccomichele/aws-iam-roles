@@ -35,7 +35,7 @@ jobs:
     secrets: inherit
 
   stg:
-    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    if: github.event_name != 'pull_request' || (github.event.pull_request.draft == false && github.event.pull_request.user.login != 'dependabot[bot]')
     name: "[STG - ${{ matrix.environment_prefix }}]"
     strategy:
       matrix:
@@ -58,7 +58,6 @@ jobs:
       - name: Countdown to PROD deployment
         run: echo "Waiting for PROD deployment gate..."
   prod:
-    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     name: "[PROD - ${{ matrix.environment_prefix }}]"
     needs: prod-wait-gate
     strategy:
