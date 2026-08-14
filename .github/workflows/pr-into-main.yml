@@ -41,11 +41,11 @@ jobs:
     secrets: inherit
 
   stg:
-    if: github.event_name != 'pull_request' || (github.event.pull_request.draft == false && github.event.pull_request.user.login != 'dependabot[bot]')
+    if: github.event_name != 'pull_request' && inputs['local-only'] == false || (github.event.pull_request.draft == false && github.event.pull_request.user.login != 'dependabot[bot]')
     name: "[STG - ${{ matrix.environment_prefix }}]"
     strategy:
       matrix:
-        environment_prefix: ${{ fromJSON(github.event_name == 'workflow_dispatch' && inputs['local-only'] == true && '[""]' || vars['ENVIRONMENT_PREFIXES_JSON'] || '[""]') }}
+        environment_prefix: ${{ fromJSON(vars['ENVIRONMENT_PREFIXES_JSON'] || '[""]') }}
     uses: faccomichele/gha-reusables/.github/workflows/terraform-run.yml@main
     with:
       environment: 'stg'
