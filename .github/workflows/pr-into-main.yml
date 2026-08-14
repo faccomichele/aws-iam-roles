@@ -41,7 +41,11 @@ jobs:
     secrets: inherit
 
   stg:
-    if: github.event_name != 'pull_request' && inputs['local-only'] == false || (github.event.pull_request.draft == false && github.event.pull_request.user.login != 'dependabot[bot]')
+    if: |
+      (github.event_name == 'workflow_dispatch' && inputs['local-only'] == false) ||
+      (github.event_name == 'pull_request' &&
+      github.event.pull_request.draft == false &&
+      github.event.pull_request.user.login != 'dependabot[bot]')
     name: "[STG - ${{ matrix.environment_prefix }}]"
     strategy:
       matrix:
