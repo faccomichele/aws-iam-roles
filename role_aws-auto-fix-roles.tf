@@ -246,7 +246,9 @@ resource "aws_iam_role_policy" "aws-auto-fix-roles" {
           "s3:GetAccelerateConfiguration",
           "s3:GetReplicationConfiguration",
           "s3:ListBucket",
-          "s3:ListTagsForResource"
+          "s3:ListTagsForResource",
+          "s3:TagResource",
+          "s3:UntagResource"
         ]
         Resource = [
           "arn:aws:s3:::aws-auto-fix-roles-cloudtrail-*",
