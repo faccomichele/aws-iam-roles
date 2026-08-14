@@ -38,10 +38,11 @@ jobs:
     secrets: inherit
 
   stg:
+    if: github.event_name == 'workflow_dispatch' && inputs['local-only'] == false
     name: "[STG - ${{ matrix.environment_prefix }}]"
     strategy:
       matrix:
-        environment_prefix: ${{ fromJSON(github.event_name == 'workflow_dispatch' && inputs['local-only'] == true && '[""]' || vars['ENVIRONMENT_PREFIXES_JSON'] || '[""]') }}
+        environment_prefix: ${{ fromJSON(vars['ENVIRONMENT_PREFIXES_JSON'] || '[""]') }}
     uses: faccomichele/gha-reusables/.github/workflows/terraform-run.yml@main
     with:
       environment: 'stg'
