@@ -250,6 +250,9 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
           "glue:UpdateTable",
           "glue:GetTable",
           "glue:GetTables",
+          "glue:GetTags",
+          "glue:TagResource",
+          "glue:UntagResource",
         ]
         Resource = [
           "arn:aws:glue:*:${data.aws_caller_identity.current.account_id}:catalog",
