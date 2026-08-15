@@ -70,11 +70,11 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
           "ec2:DeleteTags",
         ]
         Resource = ["*"]
-        Condition = {
-          StringLike = {
-            "aws:ResourceTag/Name" = "aws-shared-vpc-${local.environment}-*"
-          }
-        }
+        # Condition = {
+        #   StringLike = {
+        #     "aws:ResourceTag/Name" = "aws-shared-vpc-${local.environment}-*"
+        #   }
+        # }
       },
     ]
   })

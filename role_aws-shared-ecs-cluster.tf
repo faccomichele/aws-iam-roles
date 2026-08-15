@@ -30,7 +30,7 @@ resource "aws_iam_role_policy" "aws-shared-ecs-cluster" {
           "ecs:UntagResource",
         ]
         Resource = [
-          "arn:aws:ecs:*:${data.aws_caller_identity.current.account_id}:cluster/aws-shared-ecs-cluster-${local.environment}-*",
+          "arn:aws:ecs:*:${data.aws_caller_identity.current.account_id}:cluster/aws-shared-ecs-cluster-${local.environment}*",
         ]
       },
       {
@@ -39,6 +39,14 @@ resource "aws_iam_role_policy" "aws-shared-ecs-cluster" {
         Action = [
           "logs:DescribeLogGroups",
           "logs:ListTagsForResource",
+        ]
+        Resource = ["*"]
+      },
+      {
+        Sid    = "IAMServiceLinkedRole"
+        Effect = "Allow"
+        Action = [
+          "iam:CreateServiceLinkedRole",
         ]
         Resource = ["*"]
       },
@@ -54,7 +62,8 @@ resource "aws_iam_role_policy" "aws-shared-ecs-cluster" {
           "logs:UntagResource",
         ]
         Resource = [
-          "arn:aws:logs:*:${data.aws_caller_identity.current.account_id}:log-group:/ecs/aws-shared-ecs-cluster-${local.environment}-*",
+          "arn:aws:logs:*:${data.aws_caller_identity.current.account_id}:log-group:/ecs/aws-shared-ecs-cluster-${local.environment}",
+          "arn:aws:logs:*:${data.aws_caller_identity.current.account_id}:log-group:/ecs/aws-shared-ecs-cluster-${local.environment}:*",
         ]
       },
     ]
