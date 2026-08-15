@@ -109,6 +109,9 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
           "s3:GetLifecycleConfiguration",
           "s3:GetBucketOwnershipControls",
           "s3:ListBucket",
+          "s3:PutBucketAcl",
+          "s3:PutBucketCORS",
+          "s3:DeleteBucketCORS",
           "s3:PutBucketPolicy",
           "s3:PutBucketPublicAccessBlock",
           "s3:PutBucketOwnershipControls",
@@ -179,6 +182,7 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
         Effect = "Allow"
         Action = [
           "glue:CreateDatabase",
+          "glue:UpdateDatabase",
           "glue:DeleteDatabase",
           "glue:GetDatabase",
           "glue:GetDatabases",
