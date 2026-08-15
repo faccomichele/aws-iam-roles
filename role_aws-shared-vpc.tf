@@ -98,6 +98,7 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
         Action = [
           "s3:CreateBucket",
           "s3:DeleteBucket",
+          "s3:GetBucketAcl",
           "s3:GetBucketLocation",
           "s3:GetBucketPolicy",
           "s3:GetBucketPublicAccessBlock",
@@ -187,6 +188,7 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
           "glue:GetTables",
         ]
         Resource = [
+          "arn:aws:glue:*:${data.aws_caller_identity.current.account_id}:catalog",
           "arn:aws:glue:*:${data.aws_caller_identity.current.account_id}:database/aws_shared_vpc_logging",
           "arn:aws:glue:*:${data.aws_caller_identity.current.account_id}:table/aws_shared_vpc_logging/*",
         ]
