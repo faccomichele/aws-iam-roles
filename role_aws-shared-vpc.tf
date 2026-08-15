@@ -99,6 +99,7 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
           "s3:CreateBucket",
           "s3:DeleteBucket",
           "s3:GetBucketAcl",
+          "s3:GetBucketCORS",
           "s3:GetBucketLocation",
           "s3:GetBucketPolicy",
           "s3:GetBucketPublicAccessBlock",
