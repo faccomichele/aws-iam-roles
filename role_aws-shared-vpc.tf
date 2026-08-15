@@ -43,7 +43,6 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
           "ec2:CreateSubnet",
           "ec2:CreateRouteTable",
           "ec2:CreateNetworkAcl",
-          "ec2:CreateFlowLogs",
           "ec2:CreateTags",
         ]
         Resource = ["*"]
@@ -82,7 +81,6 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
           "ec2:DisassociateNetworkAcl",
           "ec2:RevokeSecurityGroupIngress",
           "ec2:RevokeSecurityGroupEgress",
-          "ec2:DeleteFlowLogs",
           "ec2:DeleteTags",
         ]
         Resource = ["*"]
@@ -91,6 +89,36 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
             "aws:ResourceTag/Project" = "aws-shared-vpc"
           }
         }
+      },
+      {
+        Sid    = "EC2FlowLogs"
+        Effect = "Allow"
+        Action = [
+          "ec2:CreateFlowLogs",
+          "ec2:DeleteFlowLogs",
+        ]
+        Resource = ["*"]
+      },
+      {
+        Sid    = "ECSClusterDiscovery"
+        Effect = "Allow"
+        Action = [
+          "ecs:ListClusters",
+          "ecs:DescribeClusters",
+        ]
+        Resource = [
+          "*",
+          "arn:aws:ecs:*:${data.aws_caller_identity.current.account_id}:cluster/*",
+        ]
+      },
+      {
+        Sid    = "AutoScalingDescribe"
+        Effect = "Allow"
+        Action = [
+          "autoscaling:DescribeTags",
+          "autoscaling:DescribeAutoScalingGroups",
+        ]
+        Resource = ["*"]
       },
       {
         Sid    = "S3LoggingBucketManagement"
