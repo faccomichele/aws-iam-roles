@@ -258,6 +258,7 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
           "arn:aws:glue:*:${data.aws_caller_identity.current.account_id}:catalog",
           "arn:aws:glue:*:${data.aws_caller_identity.current.account_id}:database/aws_shared_vpc_logging",
           "arn:aws:glue:*:${data.aws_caller_identity.current.account_id}:table/aws_shared_vpc_logging/*",
+          "arn:aws:glue:*:${data.aws_caller_identity.current.account_id}:userDefinedFunction/aws_shared_vpc_logging/*",
         ]
       },
       {
