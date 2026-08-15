@@ -43,7 +43,6 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
           "ec2:CreateSubnet",
           "ec2:CreateRouteTable",
           "ec2:CreateNetworkAcl",
-          "ec2:CreateFlowLogs",
           "ec2:CreateTags",
         ]
         Resource = ["*"]
@@ -82,7 +81,6 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
           "ec2:DisassociateNetworkAcl",
           "ec2:RevokeSecurityGroupIngress",
           "ec2:RevokeSecurityGroupEgress",
-          "ec2:DeleteFlowLogs",
           "ec2:DeleteTags",
         ]
         Resource = ["*"]
@@ -93,30 +91,96 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
         }
       },
       {
+        Sid    = "EC2FlowLogs"
+        Effect = "Allow"
+        Action = [
+          "ec2:CreateFlowLogs",
+          "ec2:DeleteFlowLogs",
+        ]
+        Resource = ["*"]
+      },
+      {
+        Sid    = "ECSClusterDiscovery"
+        Effect = "Allow"
+        Action = [
+          "ecs:ListClusters",
+          "ecs:DescribeClusters",
+        ]
+        Resource = [
+          "*",
+          "arn:aws:ecs:*:${data.aws_caller_identity.current.account_id}:cluster/*",
+        ]
+      },
+      {
+        Sid    = "AutoScalingDescribe"
+        Effect = "Allow"
+        Action = [
+          "autoscaling:DescribeTags",
+          "autoscaling:DescribeAutoScalingGroups",
+        ]
+        Resource = ["*"]
+      },
+      {
         Sid    = "S3LoggingBucketManagement"
         Effect = "Allow"
         Action = [
           "s3:CreateBucket",
           "s3:DeleteBucket",
+          "s3:GetBucketAcl",
+          "s3:PutBucketAcl",
+          "s3:GetBucketCORS",
+          "s3:PutBucketCORS",
+          "s3:DeleteBucketCORS",
           "s3:GetBucketLocation",
           "s3:GetBucketPolicy",
-          "s3:GetBucketPublicAccessBlock",
-          "s3:GetBucketTagging",
-          "s3:GetBucketVersioning",
-          "s3:GetEncryptionConfiguration",
-          "s3:GetLifecycleConfiguration",
-          "s3:GetBucketOwnershipControls",
-          "s3:ListBucket",
           "s3:PutBucketPolicy",
+          "s3:DeleteBucketPolicy",
+          "s3:GetBucketPublicAccessBlock",
           "s3:PutBucketPublicAccessBlock",
-          "s3:PutBucketOwnershipControls",
-          "s3:PutEncryptionConfiguration",
-          "s3:PutLifecycleConfiguration",
+          "s3:GetBucketTagging",
           "s3:PutBucketTagging",
           "s3:DeleteBucketTagging",
+          "s3:GetBucketVersioning",
+          "s3:PutBucketVersioning",
+          "s3:GetEncryptionConfiguration",
+          "s3:PutEncryptionConfiguration",
+          "s3:DeleteEncryptionConfiguration",
+          "s3:GetLifecycleConfiguration",
+          "s3:PutLifecycleConfiguration",
+          "s3:DeleteLifecycleConfiguration",
+          "s3:GetBucketOwnershipControls",
+          "s3:PutBucketOwnershipControls",
+          "s3:GetBucketLogging",
+          "s3:PutBucketLogging",
+          "s3:GetBucketRequestPayment",
+          "s3:PutBucketRequestPayment",
+          "s3:GetBucketWebsite",
+          "s3:PutBucketWebsite",
+          "s3:DeleteBucketWebsite",
+          "s3:GetBucketNotification",
+          "s3:PutBucketNotification",
+          "s3:GetBucketObjectLockConfiguration",
+          "s3:GetAccelerateConfiguration",
+          "s3:PutAccelerateConfiguration",
+          "s3:GetReplicationConfiguration",
+          "s3:ListBucket",
+          "s3:ListBucketVersions",
+          "s3:ListBucketMultipartUploads",
+          "s3:AbortMultipartUpload",
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject",
+          "s3:GetObjectAcl",
+          "s3:PutObjectAcl",
+          "s3:GetObjectTagging",
+          "s3:PutObjectTagging",
+          "s3:ListTagsForResource",
+          "s3:TagResource",
+          "s3:UntagResource",
         ]
         Resource = [
           "arn:aws:s3:::aws-shared-vpc-flow-logs-${local.environment}-*",
+          "arn:aws:s3:::aws-shared-vpc-flow-logs-${local.environment}-*/*",
         ]
       },
       {
@@ -177,6 +241,7 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
         Effect = "Allow"
         Action = [
           "glue:CreateDatabase",
+          "glue:UpdateDatabase",
           "glue:DeleteDatabase",
           "glue:GetDatabase",
           "glue:GetDatabases",
@@ -187,6 +252,7 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
           "glue:GetTables",
         ]
         Resource = [
+          "arn:aws:glue:*:${data.aws_caller_identity.current.account_id}:catalog",
           "arn:aws:glue:*:${data.aws_caller_identity.current.account_id}:database/aws_shared_vpc_logging",
           "arn:aws:glue:*:${data.aws_caller_identity.current.account_id}:table/aws_shared_vpc_logging/*",
         ]
