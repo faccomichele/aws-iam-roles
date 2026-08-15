@@ -1,0 +1,14 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "iam-policy-autopilot": {
+      "type": "local",
+      "command": ["uvx", "iam-policy-autopilot", "mcp-server"],
+      "environment": {
+        "AWS_PROFILE": "default",
+        "AWS_REGION": "us-east-1"
+      },
+      "enabled": true
+    }
+  }
+}

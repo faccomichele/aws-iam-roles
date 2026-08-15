@@ -18,6 +18,7 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
           "ec2:DescribeRouteTables",
           "ec2:DescribeNetworkAcls",
           "ec2:DescribeSecurityGroups",
+          "ec2:DescribeSecurityGroupRules",
           "ec2:DescribeTags",
           "ec2:DescribeAvailabilityZones",
           "ec2:DescribeAccountAttributes",
@@ -28,27 +29,44 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
           "ec2:DescribeVpcPeeringConnections",
           "ec2:DescribeNatGateways",
           "ec2:DescribeRegions",
-          "ec2:DescribeSecurityGroupRules",
+          "ec2:DescribeFlowLogs",
         ]
         Resource = ["*"]
+      },
+      {
+        Sid    = "EC2NetworkCreate"
+        Effect = "Allow"
+        Action = [
+          "ec2:CreateVpc",
+          "ec2:CreateInternetGateway",
+          "ec2:CreateEgressOnlyInternetGateway",
+          "ec2:CreateSubnet",
+          "ec2:CreateRouteTable",
+          "ec2:CreateNetworkAcl",
+          "ec2:CreateFlowLogs",
+          "ec2:CreateTags",
+        ]
+        Resource = ["*"]
+        Condition = {
+          StringEquals = {
+            "aws:RequestTag/Project" = "aws-shared-vpc"
+          }
+        }
       },
       {
         Sid    = "EC2NetworkManagement"
         Effect = "Allow"
         Action = [
-          "ec2:CreateVpc",
           "ec2:DeleteVpc",
           "ec2:ModifyVpcAttribute",
-          "ec2:CreateInternetGateway",
           "ec2:AttachInternetGateway",
           "ec2:DetachInternetGateway",
           "ec2:DeleteInternetGateway",
-          "ec2:CreateEgressOnlyInternetGateway",
           "ec2:DeleteEgressOnlyInternetGateway",
-          "ec2:CreateSubnet",
           "ec2:DeleteSubnet",
           "ec2:ModifySubnetAttribute",
-          "ec2:CreateRouteTable",
+          "ec2:AssociateSubnetCidrBlock",
+          "ec2:DisassociateSubnetCidrBlock",
           "ec2:DeleteRouteTable",
           "ec2:AssociateRouteTable",
           "ec2:DisassociateRouteTable",
@@ -56,25 +74,150 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
           "ec2:CreateRoute",
           "ec2:DeleteRoute",
           "ec2:ReplaceRoute",
-          "ec2:CreateNetworkAcl",
           "ec2:DeleteNetworkAcl",
           "ec2:CreateNetworkAclEntry",
           "ec2:DeleteNetworkAclEntry",
           "ec2:ReplaceNetworkAclEntry",
           "ec2:ReplaceNetworkAclAssociation",
+          "ec2:DisassociateNetworkAcl",
           "ec2:RevokeSecurityGroupIngress",
           "ec2:RevokeSecurityGroupEgress",
-          "ec2:AuthorizeSecurityGroupIngress",
-          "ec2:AuthorizeSecurityGroupEgress",
-          "ec2:CreateTags",
+          "ec2:DeleteFlowLogs",
           "ec2:DeleteTags",
         ]
         Resource = ["*"]
-        # Condition = {
-        #   StringLike = {
-        #     "aws:ResourceTag/Name" = "aws-shared-vpc-${local.environment}-*"
-        #   }
-        # }
+        Condition = {
+          StringEquals = {
+            "aws:ResourceTag/Project" = "aws-shared-vpc"
+          }
+        }
+      },
+      {
+        Sid    = "S3LoggingBucketManagement"
+        Effect = "Allow"
+        Action = [
+          "s3:CreateBucket",
+          "s3:DeleteBucket",
+          "s3:GetBucketLocation",
+          "s3:GetBucketPolicy",
+          "s3:GetBucketPublicAccessBlock",
+          "s3:GetBucketTagging",
+          "s3:GetBucketVersioning",
+          "s3:GetEncryptionConfiguration",
+          "s3:GetLifecycleConfiguration",
+          "s3:GetBucketOwnershipControls",
+          "s3:ListBucket",
+          "s3:PutBucketPolicy",
+          "s3:PutBucketPublicAccessBlock",
+          "s3:PutBucketOwnershipControls",
+          "s3:PutEncryptionConfiguration",
+          "s3:PutLifecycleConfiguration",
+          "s3:PutBucketTagging",
+          "s3:DeleteBucketTagging",
+        ]
+        Resource = [
+          "arn:aws:s3:::aws-shared-vpc-flow-logs-${local.environment}-*",
+        ]
+      },
+      {
+        Sid    = "Route53ResolverQueryLogs"
+        Effect = "Allow"
+        Action = [
+          "route53resolver:CreateResolverQueryLogConfig",
+          "route53resolver:ListResolverQueryLogConfigs",
+          "route53resolver:ListResolverQueryLogConfigAssociations",
+        ]
+        Resource = ["*"]
+      },
+      {
+        Sid    = "Route53ResolverQueryLogsResourceScoped"
+        Effect = "Allow"
+        Action = [
+          "route53resolver:DeleteResolverQueryLogConfig",
+          "route53resolver:GetResolverQueryLogConfig",
+          "route53resolver:AssociateResolverQueryLogConfig",
+          "route53resolver:DisassociateResolverQueryLogConfig",
+          "route53resolver:GetResolverQueryLogConfigAssociation",
+          "route53resolver:TagResource",
+          "route53resolver:UntagResource",
+          "route53resolver:ListTagsForResource",
+        ]
+        Resource = [
+          "arn:aws:route53resolver:*:${data.aws_caller_identity.current.account_id}:resolver-query-log-config/*",
+          "arn:aws:route53resolver:*:${data.aws_caller_identity.current.account_id}:resolver-query-log-config-association/*",
+        ]
+      },
+      {
+        Sid    = "GuardDutyDetectorManagement"
+        Effect = "Allow"
+        Action = [
+          "guardduty:CreateDetector",
+          "guardduty:ListDetectors",
+        ]
+        Resource = ["*"]
+      },
+      {
+        Sid    = "GuardDutyDetectorOperations"
+        Effect = "Allow"
+        Action = [
+          "guardduty:UpdateDetector",
+          "guardduty:DeleteDetector",
+          "guardduty:GetDetector",
+          "guardduty:UpdateDetectorFeature",
+          "guardduty:TagResource",
+          "guardduty:UntagResource",
+          "guardduty:ListTagsForResource",
+        ]
+        Resource = [
+          "arn:aws:guardduty:*:${data.aws_caller_identity.current.account_id}:detector/*",
+        ]
+      },
+      {
+        Sid    = "GlueCatalogManagement"
+        Effect = "Allow"
+        Action = [
+          "glue:CreateDatabase",
+          "glue:DeleteDatabase",
+          "glue:GetDatabase",
+          "glue:GetDatabases",
+          "glue:CreateTable",
+          "glue:DeleteTable",
+          "glue:UpdateTable",
+          "glue:GetTable",
+          "glue:GetTables",
+        ]
+        Resource = [
+          "arn:aws:glue:*:${data.aws_caller_identity.current.account_id}:database/aws_shared_vpc_logging",
+          "arn:aws:glue:*:${data.aws_caller_identity.current.account_id}:table/aws_shared_vpc_logging/*",
+        ]
+      },
+      {
+        Sid    = "AthenaWorkgroupManagement"
+        Effect = "Allow"
+        Action = [
+          "athena:CreateWorkGroup",
+          "athena:DeleteWorkGroup",
+          "athena:GetWorkGroup",
+          "athena:UpdateWorkGroup",
+          "athena:ListWorkGroups",
+          "athena:TagResource",
+          "athena:UntagResource",
+          "athena:ListTagsForResource",
+        ]
+        Resource = [
+          "arn:aws:athena:*:${data.aws_caller_identity.current.account_id}:workgroup/aws-shared-vpc-logging",
+        ]
+      },
+      {
+        Sid    = "IAMServiceLinkedRole"
+        Effect = "Allow"
+        Action = [
+          "iam:CreateServiceLinkedRole",
+        ]
+        Resource = [
+          "arn:aws:iam::*:role/aws-service-role/vpc-flow-logs.amazonaws.com/AWSServiceRoleForVPCFlowLogs",
+          "arn:aws:iam::*:role/aws-service-role/guardduty.amazonaws.com/AWSServiceRoleForAmazonGuardDuty",
+        ]
       },
     ]
   })
