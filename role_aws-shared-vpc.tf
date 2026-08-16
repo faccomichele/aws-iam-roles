@@ -139,6 +139,33 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
         Resource = ["*"]
       },
       {
+        Sid    = "SSMDescribeParameters"
+        Effect = "Allow"
+        Action = [
+          "ssm:DescribeParameters",
+        ]
+        Resource = ["*"]
+      },
+      {
+        Sid    = "SSMParameterManagement"
+        Effect = "Allow"
+        Action = [
+          "ssm:GetParameter",
+          "ssm:GetParameters",
+          "ssm:GetParametersByPath",
+          "ssm:PutParameter",
+          "ssm:DeleteParameter",
+          "ssm:DeleteParameters",
+          "ssm:AddTagsToResource",
+          "ssm:RemoveTagsFromResource",
+          "ssm:ListTagsForResource",
+        ]
+        Resource = [
+          "arn:aws:ssm:*:${data.aws_caller_identity.current.account_id}:parameter/${local.organization}/aws-shared-vpc/${local.environment}/vpc_*",
+          "arn:aws:ssm:*:${data.aws_caller_identity.current.account_id}:parameter/${local.organization}/aws-shared-vpc/${local.environment}/*_subnet_ids",
+        ]
+      },
+      {
         Sid    = "S3LoggingBucketManagement"
         Effect = "Allow"
         Action = [

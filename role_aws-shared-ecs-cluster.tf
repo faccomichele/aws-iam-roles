@@ -34,6 +34,24 @@ resource "aws_iam_role_policy" "aws-shared-ecs-cluster" {
         ]
       },
       {
+        Sid    = "SSMParameterManagement"
+        Effect = "Allow"
+        Action = [
+          "ssm:GetParameter",
+          "ssm:GetParameters",
+          "ssm:GetParametersByPath",
+          "ssm:PutParameter",
+          "ssm:DeleteParameter",
+          "ssm:DeleteParameters",
+          "ssm:AddTagsToResource",
+          "ssm:RemoveTagsFromResource",
+          "ssm:ListTagsForResource",
+        ]
+        Resource = [
+          "arn:aws:ssm:*:${data.aws_caller_identity.current.account_id}:parameter/${local.organization}/aws-shared-ecs-cluster/${local.environment}/*"
+        ]
+      },
+      {
         Sid    = "CloudWatchLogsDiscovery"
         Effect = "Allow"
         Action = [
