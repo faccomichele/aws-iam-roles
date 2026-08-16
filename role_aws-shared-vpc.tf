@@ -124,6 +124,7 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
           "ecs:ListClusters",
           "ecs:DescribeClusters",
           "ecs:ListTaskDefinitions",
+          "ecs:ListServices",
         ]
         Resource = ["*"]
       },
