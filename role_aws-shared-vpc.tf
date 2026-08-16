@@ -53,6 +53,24 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
         }
       },
       {
+        Sid    = "EC2NetworkCreateInTaggedVpc"
+        Effect = "Allow"
+        Action = [
+          "ec2:CreateEgressOnlyInternetGateway",
+          "ec2:CreateSubnet",
+          "ec2:CreateRouteTable",
+          "ec2:CreateNetworkAcl",
+        ]
+        Resource = [
+          "arn:aws:ec2:*:${data.aws_caller_identity.current.account_id}:vpc/*",
+        ]
+        Condition = {
+          StringEquals = {
+            "aws:ResourceTag/Project" = "aws-shared-vpc"
+          }
+        }
+      },
+      {
         Sid    = "EC2NetworkManagement"
         Effect = "Allow"
         Action = [
@@ -105,11 +123,9 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
         Action = [
           "ecs:ListClusters",
           "ecs:DescribeClusters",
+          "ecs:ListTaskDefinitions",
         ]
-        Resource = [
-          "*",
-          "arn:aws:ecs:*:${data.aws_caller_identity.current.account_id}:cluster/*",
-        ]
+        Resource = ["*"]
       },
       {
         Sid    = "AutoScalingDescribe"
@@ -190,6 +206,14 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
           "route53resolver:CreateResolverQueryLogConfig",
           "route53resolver:ListResolverQueryLogConfigs",
           "route53resolver:ListResolverQueryLogConfigAssociations",
+        ]
+        Resource = ["*"]
+      },
+      {
+        Sid    = "CloudWatchLogsDelivery"
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogDelivery",
         ]
         Resource = ["*"]
       },
