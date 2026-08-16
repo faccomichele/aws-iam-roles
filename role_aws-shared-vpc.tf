@@ -53,6 +53,24 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
         }
       },
       {
+        Sid    = "EC2NetworkCreateInTaggedVpc"
+        Effect = "Allow"
+        Action = [
+          "ec2:CreateEgressOnlyInternetGateway",
+          "ec2:CreateSubnet",
+          "ec2:CreateRouteTable",
+          "ec2:CreateNetworkAcl",
+        ]
+        Resource = [
+          "arn:aws:ec2:*:${data.aws_caller_identity.current.account_id}:vpc/*",
+        ]
+        Condition = {
+          StringEquals = {
+            "aws:ResourceTag/Project" = "aws-shared-vpc"
+          }
+        }
+      },
+      {
         Sid    = "EC2NetworkManagement"
         Effect = "Allow"
         Action = [
@@ -78,7 +96,6 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
           "ec2:DeleteNetworkAclEntry",
           "ec2:ReplaceNetworkAclEntry",
           "ec2:ReplaceNetworkAclAssociation",
-          "ec2:DisassociateNetworkAcl",
           "ec2:RevokeSecurityGroupIngress",
           "ec2:RevokeSecurityGroupEgress",
           "ec2:DeleteTags",
@@ -105,11 +122,12 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
         Action = [
           "ecs:ListClusters",
           "ecs:DescribeClusters",
+          "ecs:ListTaskDefinitions",
+          "ecs:ListServices",
+          "ecs:ListTasks",
+          "ecs:ListContainerInstances",
         ]
-        Resource = [
-          "*",
-          "arn:aws:ecs:*:${data.aws_caller_identity.current.account_id}:cluster/*",
-        ]
+        Resource = ["*"]
       },
       {
         Sid    = "AutoScalingDescribe"
@@ -130,7 +148,6 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
           "s3:PutBucketAcl",
           "s3:GetBucketCORS",
           "s3:PutBucketCORS",
-          "s3:DeleteBucketCORS",
           "s3:GetBucketLocation",
           "s3:GetBucketPolicy",
           "s3:PutBucketPolicy",
@@ -139,15 +156,12 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
           "s3:PutBucketPublicAccessBlock",
           "s3:GetBucketTagging",
           "s3:PutBucketTagging",
-          "s3:DeleteBucketTagging",
           "s3:GetBucketVersioning",
           "s3:PutBucketVersioning",
           "s3:GetEncryptionConfiguration",
           "s3:PutEncryptionConfiguration",
-          "s3:DeleteEncryptionConfiguration",
           "s3:GetLifecycleConfiguration",
           "s3:PutLifecycleConfiguration",
-          "s3:DeleteLifecycleConfiguration",
           "s3:GetBucketOwnershipControls",
           "s3:PutBucketOwnershipControls",
           "s3:GetBucketLogging",
@@ -194,6 +208,14 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
         Resource = ["*"]
       },
       {
+        Sid    = "CloudWatchLogsDelivery"
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogDelivery",
+        ]
+        Resource = ["*"]
+      },
+      {
         Sid    = "Route53ResolverQueryLogsResourceScoped"
         Effect = "Allow"
         Action = [
@@ -227,7 +249,8 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
           "guardduty:UpdateDetector",
           "guardduty:DeleteDetector",
           "guardduty:GetDetector",
-          "guardduty:UpdateDetectorFeature",
+          "guardduty:UpdateMemberDetectors",
+          "guardduty:GetMemberDetectors",
           "guardduty:TagResource",
           "guardduty:UntagResource",
           "guardduty:ListTagsForResource",
