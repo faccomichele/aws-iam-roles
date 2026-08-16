@@ -161,8 +161,8 @@ resource "aws_iam_role_policy" "aws-shared-vpc" {
           "ssm:ListTagsForResource",
         ]
         Resource = [
-          "arn:aws:ssm:*:${data.aws_caller_identity.current.account_id}:parameter/${local.organization}/aws-shared-vpc/*/vpc_*",
-          "arn:aws:ssm:*:${data.aws_caller_identity.current.account_id}:parameter/${local.organization}/aws-shared-vpc/*/*_subnet_ids",
+          "arn:aws:ssm:*:${data.aws_caller_identity.current.account_id}:parameter/${local.organization}/aws-shared-vpc/${local.environment}/vpc_*",
+          "arn:aws:ssm:*:${data.aws_caller_identity.current.account_id}:parameter/${local.organization}/aws-shared-vpc/${local.environment}/*_subnet_ids",
         ]
       },
       {
